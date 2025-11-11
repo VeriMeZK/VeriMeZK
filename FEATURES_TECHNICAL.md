@@ -239,3 +239,95 @@
 - `face-api.js` (already installed)
 - Image processing utilities
 
+---
+
+## 6. Midnight Smart Contract for Identity Proof Storage and Verification
+**Feature:** Create and deploy a Midnight smart contract to store identity proof hashes and enable privacy-preserving on-chain verification.
+
+**Current State:**
+- Contract address referenced in environment variables but no contract exists
+- No contract deployment logic
+- No contract state reading/writing functionality
+- Proofs cannot be stored or verified on-chain
+
+**Technical Requirements:**
+- Design contract interface for identity proof storage:
+  - Map wallet addresses to proof records
+  - Store proof hash, timestamp, and verified clauses
+  - Enable proof updates and revocation
+  - Support privacy-preserving verification queries
+- Write contract code in Midnight's contract language (likely Rust-based)
+- Implement contract functions:
+  - `storeProof(proofHash: string, clauses: string[], timestamp: u64)` - Store new proof
+  - `getProof(address: Address)` - Retrieve proof for address
+  - `verifyClaim(address: Address, claim: string)` - Verify specific claim
+  - `updateProof(proofHash: string, clauses: string[])` - Update existing proof
+  - `revokeProof()` - Revoke own proof
+- Deploy contract to Midnight testnet/mainnet
+- Integrate contract interactions with frontend
+
+**Implementation Approach:**
+1. Research Midnight contract development:
+   - Review Midnight contract documentation and examples
+   - Understand contract syntax and privacy features
+   - Identify available data types and storage options
+2. Design contract data structures:
+   ```rust
+   // Pseudocode - actual syntax depends on Midnight contract language
+   struct Proof {
+       hash: String,
+       timestamp: u64,
+       clauses: Vec<String>,
+       active: bool,
+   }
+   
+   mapping(address => Proof) proofs;
+   ```
+3. Write contract code in `contracts/IdentityProof.sol` (or `.rs` depending on language)
+4. Compile contract to bytecode
+5. Create deployment script in `scripts/deploy-contract.ts`
+6. Deploy contract using Midnight SDK:
+   - Use `initializeMidnightAPI` with contract bytecode
+   - Store contract address in environment/config
+7. Create contract interaction utilities in `src/lib/midnight/contract.ts`:
+   - `storeProof()` - Call contract to store proof
+   - `getProof()` - Read contract state
+   - `verifyClaim()` - Verify specific claim
+8. Update `TransactionSigner.tsx`:
+   - Call contract `storeProof` function instead of just metadata
+   - Handle contract call responses
+9. Add contract state reading hooks in `src/hooks/useMidnight.ts`
+10. Create proof verification page for public verification
+
+**Acceptance Criteria:**
+- Contract code written and tested
+- Contract deployed to Midnight testnet
+- Contract address stored in configuration
+- `storeProof` function implemented and working
+- `getProof` function implemented and working
+- `verifyClaim` function implemented and working
+- Contract state readable via Midnight SDK
+- Transactions confirmed on-chain
+- Error handling for contract failures
+- Privacy features working (confidential state)
+- Documentation for contract interface and ABI
+
+**Dependencies:**
+- Midnight contract compiler
+- Midnight SDK (already integrated as optional dependencies)
+- Contract deployment tools
+- Midnight testnet/mainnet access
+
+**Contract Functions:**
+- `storeProof(proofHash, clauses, timestamp)` - Store identity proof
+- `getProof(address)` - Retrieve proof for wallet address
+- `verifyClaim(address, claim)` - Verify specific claim (e.g., "adult:true")
+- `updateProof(proofHash, clauses)` - Update existing proof
+- `revokeProof()` - Revoke own proof (set active = false)
+
+**Privacy Considerations:**
+- Use Midnight's confidential computing features
+- Encrypt sensitive data in contract state
+- Allow selective disclosure of claims
+- Support zero-knowledge verification queries
+
