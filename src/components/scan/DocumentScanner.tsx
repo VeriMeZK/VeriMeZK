@@ -4,8 +4,9 @@ import jsQR from 'jsqr';
 import { useVerification } from '@/contexts/VerificationContext';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
+import { PhonePairing } from './PhonePairing';
 import type { MRZData } from '@/types';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function parseMRZ(mrzText: string): MRZData | null {
   // MRZ format: 2 lines for TD1 (ID card) or 3 lines for TD3 (passport)
@@ -65,6 +66,7 @@ export function DocumentScanner() {
   const [scanning, setScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [scannedData, setScannedData] = useState<MRZData | null>(null);
+  const [usePhone, setUsePhone] = useState(false);
   const { setMRZData, setStep } = useVerification();
 
   const capture = useCallback(() => {
@@ -131,6 +133,28 @@ export function DocumentScanner() {
     );
   }
 
+  const handleDocumentFromPhone = useCallback((mrzData: MRZData, imageData: string) => {
+    setScannedData(mrzData);
+    setMRZData(mrzData);
+    setStep('verifying');
+    setUsePhone(false);
+  }, [setMRZData, setStep]);
+
+  const handleFaceFromPhone = useCallback((faceImageData: string) => {
+    // This will be handled by FaceVerification component
+    setUsePhone(false);
+  }, []);
+
+  if (usePhone) {
+    return (
+      <PhonePairing
+        onDocumentCaptured={handleDocumentFromPhone}
+        onFaceCaptured={handleFaceFromPhone}
+        onCancel={() => setUsePhone(false)}
+      />
+    );
+  }
+
   if (scannedData) {
     return (
       <Card>
@@ -168,14 +192,26 @@ export function DocumentScanner() {
         </p>
 
         {hasPermission && (
-          <div className="relative rounded-lg overflow-hidden">
+          <div className="relative rounded-lg overflow-hidden bg-black">
             <Webcam
               audio={false}
               ref={webcamRef}
               screenshotFormat="image/jpeg"
               className="w-full"
             />
-            <div className="absolute inset-0 border-4 border-white/50 rounded-lg pointer-events-none" />
+            {/* Passport-shaped overlay */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="w-4/5 max-w-md aspect-[125/88] border-4 border-white/80 rounded-sm shadow-2xl">
+                <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-white text-sm font-medium text-center whitespace-nowrap drop-shadow-lg">
+                  Align MRZ here
+                </div>
+              </div>
+            </div>
+            {/* Corner guides */}
+            <div className="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-white/80 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-white/80 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-white/80 pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-white/80 pointer-events-none" />
           </div>
         )}
 
@@ -189,14 +225,23 @@ export function DocumentScanner() {
           </motion.div>
         )}
 
+        <div className="flex gap-3">
+          <Button
+            onClick={() => setUsePhone(true)}
+            variant="secondary"
+            className="flex-1"
+          >
+            Use Phone Camera
+          </Button>
         <Button
           onClick={capture}
           isLoading={scanning}
           disabled={scanning || !hasPermission}
-          className="w-full"
+            className="flex-1"
         >
           {scanning ? 'Scanning...' : 'Capture & Scan'}
         </Button>
+        </div>
       </div>
     </Card>
   );

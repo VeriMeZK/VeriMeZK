@@ -4,7 +4,9 @@
     "description": "Zero-Knowledge Identity Proof Toolkit for Browser Environments",
     "type": "module",
     "scripts": {
-        "dev": "vite",
+        "dev": "node scripts/show-network-ips.js && vite --host 0.0.0.0",
+        "dev:https": "npm run cert:generate && npm run dev",
+        "cert:generate": "bash scripts/generate-cert.sh",
         "build": "tsc && vite build",
         "preview": "vite preview",
         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
@@ -44,10 +46,14 @@
         "face-api.js": "^0.22.2",
         "framer-motion": "^11.0.0",
         "jsqr": "^1.4.0",
+        "mrz-parser": "^0.0.1",
         "next-themes": "^0.2.1",
+        "opencv-wasm": "^4.3.0-10",
+        "qrcode.react": "^4.2.0",
         "react": "^18.3.0",
         "react-dom": "^18.3.0",
-        "react-webcam": "^7.2.0"
+        "react-webcam": "^7.2.0",
+        "tesseract.js": "^6.0.1"
     },
     "optionalDependencies": {
         "@midnight-ntwrk/dapp-connector-api": "3.0.0",

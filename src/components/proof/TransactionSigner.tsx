@@ -4,6 +4,8 @@ import { useVerification } from '@/contexts/VerificationContext';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import { motion } from 'framer-motion';
+import { getStoredVerifications, saveVerification } from '@/utils/storage';
+import type { StoredVerification } from '@/types';
 
 export function TransactionSigner() {
   const { wallet, signTx } = useWallet();
@@ -49,6 +51,20 @@ export function TransactionSigner() {
       ).join('')}`;
 
       setTxHash(simulatedHash);
+      
+      // Update stored verification with transaction hash
+      if (state.proofResult && state.walletAddress) {
+        const stored = getStoredVerifications(state.walletAddress);
+        const existing = stored.find(v => v.proofHash === state.proofResult!.hash);
+        if (existing) {
+          const updated: StoredVerification = {
+            ...existing,
+            transactionHash: simulatedHash,
+          };
+          saveVerification(updated);
+        }
+      }
+      
       setStep('complete');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Transaction signing failed');
@@ -98,7 +114,7 @@ export function TransactionSigner() {
             variant="secondary"
             className="w-full"
           >
-            Start New Verification
+            Back to Dashboard
           </Button>
         </motion.div>
       </Card>

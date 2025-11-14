@@ -41,6 +41,8 @@ export interface MRZData {
   gender: string;
   expiryDate: string;
   personalNumber?: string;
+  photoData?: string; // Base64 image data of passport photo
+  fullImageData?: string; // Full passport image
 }
 
 export interface VerificationState {
@@ -51,6 +53,24 @@ export interface VerificationState {
   faceMatchScore?: number;
   proofResult?: ProofResult;
   error?: string;
+}
+
+export type VerificationStatus = 'verified' | 'pending' | 'expired';
+
+export interface StoredVerification {
+  id: string;
+  proofHash: string;
+  clauses: string[];
+  transactionHash?: string;
+  timestamp: Date;
+  status: VerificationStatus;
+  walletAddress: string;
+  claims?: {
+    name?: string;
+    countryCode?: string;
+    dob?: string;
+    expiry?: string;
+  };
 }
 
 export interface MidnightProviders {

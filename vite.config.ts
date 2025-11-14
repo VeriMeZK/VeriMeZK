@@ -4,7 +4,7 @@ import wasm from 'vite-plugin-wasm';
 import topLevelAwait from 'vite-plugin-top-level-await';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import path from 'path';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 
 // Read package.json version at build time
 const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'));
@@ -44,7 +44,41 @@ export default defineConfig({
   },
   server: {
     port: 3356,
-    host: true,
+    host: '0.0.0.0', // Listen on all interfaces to detect all IPs
+    // Enable HTTPS if certificates exist
+    ...((): { https?: { key: Buffer; cert: Buffer } } => {
+      const certPath = path.resolve(__dirname, './certs/cert.pem');
+      const keyPath = path.resolve(__dirname, './certs/key.pem');
+
+      if (existsSync(certPath) && existsSync(keyPath)) {
+        console.log('🔐 HTTPS enabled - using certificates from ./certs/');
+        return {
+          https: {
+            key: readFileSync(keyPath),
+            cert: readFileSync(certPath),
+          },
+        };
+      }
+
+      // Fallback: Vite can auto-generate certificates, but they'll show warnings
+      // Uncomment the line below to enable auto-generated HTTPS (with browser warnings)
+      // return { https: true };
+
+      return {};
+    })(),
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+    cors: true,
+    // Allow ngrok domains
+    allowedHosts: [
+      '.ngrok-free.app',
+      '.ngrok.io',
+      '.ngrok.app',
+      'localhost',
+    ],
   },
   build: {
     target: 'esnext',

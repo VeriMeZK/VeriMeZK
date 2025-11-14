@@ -5,12 +5,12 @@ import { ThemeProvider } from '@/components/shared/ThemeProvider';
 import { VerificationProvider, useVerification } from '@/contexts/VerificationContext';
 import { useWalletConnection } from '@/hooks/useWalletConnection';
 import { ConnectWallet } from '@/components/wallet/ConnectWallet';
-import { DocumentScanner } from '@/components/scan/DocumentScanner';
-import { FaceVerification } from '@/components/scan/FaceVerification';
-import { ProofGenerator } from '@/components/proof/ProofGenerator';
-import { TransactionSigner } from '@/components/proof/TransactionSigner';
+import { VerificationFlow } from '@/components/verification/VerificationFlow';
+import { VerificationDashboard } from '@/components/dashboard/VerificationDashboard';
+import { MobileCapture } from '@/components/scan/MobileCapture';
 import { Header } from '@/components/shared/Header';
 import { Footer } from '@/components/shared/Footer';
+import NewProofPage from '@/pages/NewProofPage';
 import { motion } from 'framer-motion';
 
 interface ErrorBoundaryState {
@@ -61,8 +61,8 @@ class ErrorBoundary extends Component<
   }
 }
 
-function VerificationFlow() {
-  const { state } = useVerification();
+function AppContent() {
+  const { state, setStep } = useVerification();
   const { connected } = useWalletConnection();
   const containerRef = React.useRef<HTMLDivElement>(null);
   
@@ -122,32 +122,29 @@ function VerificationFlow() {
   }, []);
 
   const renderStep = () => {
-    // If wallet is connected, don't show ConnectWallet component - it's shown in header
-    // Only show ConnectWallet if wallet is not connected
+    // If wallet is not connected, show ConnectWallet
     if (!isWalletConnected && (state.step === 'idle' || state.step === 'connected')) {
       return <ConnectWallet />;
     }
     
-    // If wallet is connected but step is still 'idle' or 'connected', show nothing or next step
+    // If wallet is connected and step is idle/connected, show dashboard as main page
     if (isWalletConnected && (state.step === 'idle' || state.step === 'connected')) {
-      return null; // Wallet button is in header, no need to show card
+      return <VerificationDashboard />;
     }
     
-    switch (state.step) {
-      case 'scanning':
-        return <DocumentScanner />;
-      case 'verifying':
-        return <FaceVerification />;
-      case 'proving':
-        return <ProofGenerator />;
-      case 'signing':
-        return <TransactionSigner />;
-      case 'complete':
-        return <TransactionSigner />;
-      default:
-        // Default: show ConnectWallet only if not connected
-        return isWalletConnected ? null : <ConnectWallet />;
+    // Show new verification flow for all verification steps
+    if (isWalletConnected && state.step !== 'idle' && state.step !== 'connected') {
+      return (
+        <VerificationFlow
+          onComplete={() => {
+            setStep('idle');
+          }}
+        />
+      );
     }
+    
+    // Default: show ConnectWallet if not connected, dashboard if connected
+    return isWalletConnected ? <VerificationDashboard /> : <ConnectWallet />;
   };
 
   return (
@@ -161,7 +158,7 @@ function VerificationFlow() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="max-w-2xl mx-auto"
+          className={isWalletConnected && (state.step === 'idle' || state.step === 'connected') ? 'max-w-7xl mx-auto' : 'max-w-2xl mx-auto'}
         >
           {renderStep()}
         </motion.div>
@@ -172,12 +169,42 @@ function VerificationFlow() {
 }
 
 function App() {
+  // Check if we're on the mobile capture page
+  const isMobilePage = typeof window !== 'undefined' && window.location.pathname === '/mobile';
+  
+  // Check if we're on the new proof page
+  const isNewProofPage = typeof window !== 'undefined' && window.location.pathname === '/new-proof';
+
+  if (isMobilePage) {
+    return (
+      <ErrorBoundary>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <MobileCapture />
+        </ThemeProvider>
+      </ErrorBoundary>
+    );
+  }
+
+  if (isNewProofPage) {
+    return (
+      <ErrorBoundary>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <MeshProvider>
+            <VerificationProvider>
+              <NewProofPage />
+            </VerificationProvider>
+          </MeshProvider>
+        </ThemeProvider>
+      </ErrorBoundary>
+    );
+  }
+
   return (
     <ErrorBoundary>
       <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
         <MeshProvider>
           <VerificationProvider>
-            <VerificationFlow />
+            <AppContent />
           </VerificationProvider>
         </MeshProvider>
       </ThemeProvider>

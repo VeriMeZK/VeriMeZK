@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import type { VerificationState, VerificationStep, MRZData, ProofResult } from '@/types';
+import type { VerificationState, VerificationStep, MRZData, ProofResult, StoredVerification } from '@/types';
+import { saveVerification } from '@/utils/storage';
 
 interface VerificationContextType {
   state: VerificationState;
@@ -38,7 +39,27 @@ export function VerificationProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setProofResult = useCallback((result: ProofResult) => {
-    setState((prev) => ({ ...prev, proofResult: result, step: result.success ? 'signing' : 'idle' }));
+    setState((prev) => {
+      // If proof is successful and we have wallet address, save to storage
+      if (result.success && prev.walletAddress) {
+        const storedVerification: StoredVerification = {
+          id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          proofHash: result.hash,
+          clauses: result.clauses,
+          timestamp: result.timestamp,
+          status: 'verified',
+          walletAddress: prev.walletAddress,
+          claims: prev.mrzData ? {
+            name: prev.mrzData.name,
+            countryCode: prev.mrzData.countryCode,
+            dob: prev.mrzData.dob,
+            expiry: prev.mrzData.expiryDate,
+          } : undefined,
+        };
+        saveVerification(storedVerification);
+      }
+      return { ...prev, proofResult: result, step: result.success ? 'signing' : 'idle' };
+    });
   }, []);
 
   const setError = useCallback((error: string | undefined) => {

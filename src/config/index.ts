@@ -31,6 +31,7 @@ export const config = {
   features: {
     enableMidnightSDK: import.meta.env.VITE_ENABLE_MIDNIGHT_SDK === 'true',
     enableFaceRecognition: import.meta.env.VITE_ENABLE_FACE_RECOGNITION !== 'false',
+    enableGitHubAPI: import.meta.env.VITE_ENABLE_GITHUB_API !== 'false', // Default: true, set to 'false' to disable
   },
 };
 

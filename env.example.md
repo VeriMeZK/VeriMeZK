@@ -58,6 +58,10 @@ VITE_ENABLE_MIDNIGHT_SDK=false
 
 # Enable face recognition (default: true)
 VITE_ENABLE_FACE_RECOGNITION=true
+
+# Enable GitHub API calls for stats and version (default: true)
+# Set to 'false' to disable GitHub API calls and avoid rate limit errors
+VITE_ENABLE_GITHUB_API=true
 ```
 
 ## Notes

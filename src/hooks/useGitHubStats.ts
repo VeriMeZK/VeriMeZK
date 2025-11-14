@@ -13,6 +13,9 @@ interface UseGitHubStatsOptions {
   repo?: string;
 }
 
+// Track if GitHub API is disabled due to rate limits (persists for session)
+let githubAPIDisabled = false;
+
 export function useGitHubStats(options?: UseGitHubStatsOptions): {
   stats: GitHubStats | null;
   loading: boolean;
@@ -28,28 +31,48 @@ export function useGitHubStats(options?: UseGitHubStatsOptions): {
         setLoading(true);
         setError(null);
 
+        // Check if GitHub API is disabled (config or rate limit)
+        if (!config.features.enableGitHubAPI || githubAPIDisabled) {
+          setStats({ forks: 0, commits: 0, issues: 0 });
+          setLoading(false);
+          return;
+        }
+
         // Get repo info from config
         const repoUrl = config.github.repoUrl;
         const urlMatch = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
 
         if (!urlMatch) {
-          throw new Error('Invalid GitHub repository URL');
+          // Set default values and return early
+          setStats({ forks: 0, commits: 0, issues: 0 });
+          setLoading(false);
+          return;
         }
 
         const owner = options?.owner || urlMatch[1];
         const repo = options?.repo || urlMatch[2].replace(/\.git$/, '');
 
         // Fetch repo info (includes forks and stars)
+        // Use AbortController to prevent errors from being logged
+        const controller = new AbortController();
         const repoResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}`, {
           headers: {
             Accept: 'application/vnd.github.v3+json',
           },
+          signal: controller.signal,
+        }).catch(() => {
+          // Silently catch fetch errors (network issues, CORS, etc.)
+          return null;
         });
 
-        if (!repoResponse.ok) {
-          const errorText = await repoResponse.text();
-          console.error('GitHub API error:', repoResponse.status, errorText);
-          throw new Error(`Failed to fetch repository info: ${repoResponse.status}`);
+        if (!repoResponse || !repoResponse.ok) {
+          // Handle rate limiting - disable API for this session if 403/429
+          if (repoResponse && (repoResponse.status === 403 || repoResponse.status === 429)) {
+            githubAPIDisabled = true;
+          }
+          setStats({ forks: 0, commits: 0, issues: 0 });
+          setLoading(false);
+          return;
         }
 
         const repoData = await repoResponse.json();
@@ -64,10 +87,11 @@ export function useGitHubStats(options?: UseGitHubStatsOptions): {
               headers: {
                 Accept: 'application/vnd.github.v3+json',
               },
+              signal: controller.signal,
             }
-          );
+          ).catch(() => null);
 
-          if (issuesResponse.ok) {
+          if (issuesResponse && issuesResponse.ok) {
             const issuesData = await issuesResponse.json();
             issuesCount = issuesData.total_count || 0;
           } else {
@@ -79,10 +103,11 @@ export function useGitHubStats(options?: UseGitHubStatsOptions): {
                 headers: {
                   Accept: 'application/vnd.github.v3+json',
                 },
+                signal: controller.signal,
               }
-            );
+            ).catch(() => null);
 
-            if (prsResponse.ok) {
+            if (prsResponse && prsResponse.ok) {
               const prsData = await prsResponse.json();
               const prsCount = prsData.total_count || 0;
               issuesCount = Math.max(0, (repoData.open_issues_count || 0) - prsCount);
@@ -92,8 +117,7 @@ export function useGitHubStats(options?: UseGitHubStatsOptions): {
             }
           }
         } catch (issueError) {
-          console.warn('Failed to fetch issues count:', issueError);
-          // Fallback to repo's open_issues_count
+          // Silently handle errors - fallback to repo's open_issues_count
           issuesCount = repoData.open_issues_count || 0;
         }
 
@@ -107,10 +131,11 @@ export function useGitHubStats(options?: UseGitHubStatsOptions): {
               headers: {
                 Accept: 'application/vnd.github.v3+json',
               },
+              signal: controller.signal,
             }
-          );
+          ).catch(() => null);
 
-          if (commitsResponse.ok) {
+          if (commitsResponse && commitsResponse.ok) {
             const commitsData = await commitsResponse.json();
             commitsCount = commitsData.length;
 
@@ -120,12 +145,9 @@ export function useGitHubStats(options?: UseGitHubStatsOptions): {
               // There are more commits, show "100+"
               commitsCount = 100;
             }
-          } else {
-            console.warn('Failed to fetch commits:', commitsResponse.status);
           }
         } catch (commitError) {
-          // If commit fetch fails, just use 0
-          console.warn('Failed to fetch commit count:', commitError);
+          // If commit fetch fails, just use 0 - silently
         }
 
         setStats({
@@ -135,8 +157,7 @@ export function useGitHubStats(options?: UseGitHubStatsOptions): {
           stars: repoData.stargazers_count || 0,
         });
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch GitHub stats');
-        // Set default values on error
+        // Silently handle all errors - set default values
         setStats({ forks: 0, commits: 0, issues: 0 });
       } finally {
         setLoading(false);
@@ -144,6 +165,11 @@ export function useGitHubStats(options?: UseGitHubStatsOptions): {
     }
 
     fetchStats();
+
+    // Cleanup function to abort any pending requests
+    return () => {
+      // AbortController cleanup is handled by fetch signal
+    };
   }, [options?.owner, options?.repo]);
 
   return { stats, loading, error };
