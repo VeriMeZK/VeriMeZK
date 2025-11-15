@@ -21,7 +21,7 @@ export function DangerZone({ onClearAll, isClearing }: DangerZoneProps) {
       <div className="mb-4 flex items-start gap-3">
         <FiAlertTriangle className="text-xl text-black dark:text-white mt-0.5" aria-hidden="true" />
         <div>
-          <h3 className="font-semibold text-black dark:text-white mb-1">⚠️ Danger Zone</h3>
+          <h3 className="font-semibold text-black dark:text-white mb-1">Danger Zone</h3>
           <p className="text-sm text-black dark:text-white">
             This will permanently delete ALL data including verifications, settings, and cache. This
             action cannot be undone!
