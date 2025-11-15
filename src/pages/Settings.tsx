@@ -4,6 +4,7 @@ import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import { Header } from '@/components/shared/Header';
 import { Footer } from '@/components/shared/Footer';
+import { ToastProvider } from '@/contexts/ToastContext';
 import { ThemeSettings } from '@/components/settings/ThemeSettings';
 import { LanguageSettings } from '@/components/settings/LanguageSettings';
 import { PrivacySettings } from '@/components/settings/PrivacySettings';
@@ -104,96 +105,98 @@ export default function Settings() {
   const ActiveComponent = sections.find(s => s.id === activeSection)?.component;
 
   return (
-    <div className="min-h-screen bg-gray-light dark:bg-gray-darker flex flex-col">
-      <Header />
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 flex-1">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-7xl mx-auto"
-        >
-          {/* Page Header */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-black dark:text-white mb-2">Settings</h1>
-            <p className="text-gray-600 dark:text-gray-400">
-              Manage your preferences and application settings
-            </p>
-          </div>
-
-          {/* Settings Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            {/* Sidebar Navigation */}
-            <div className="lg:col-span-1">
-              <Card className="sticky top-24">
-                <nav className="space-y-1">
-                  {sections.map(section => {
-                    const IconComponent = section.icon;
-                    return (
-                      <button
-                        key={section.id}
-                        onClick={() => handleSectionChange(section.id)}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all ${
-                          activeSection === section.id
-                            ? 'bg-black dark:bg-white text-white dark:text-black font-semibold shadow-md'
-                            : 'text-black dark:text-white hover:bg-black/5 dark:hover:bg-white/5'
-                        }`}
-                      >
-                        <IconComponent className="text-xl" />
-                        <span>{section.label}</span>
-                      </button>
-                    );
-                  })}
-                </nav>
-              </Card>
+    <ToastProvider>
+      <div className="min-h-screen bg-gray-light dark:bg-gray-darker flex flex-col">
+        <Header />
+        <main className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 flex-1">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-7xl mx-auto"
+          >
+            {/* Page Header */}
+            <div className="mb-8">
+              <h1 className="text-4xl font-bold text-black dark:text-white mb-2">Settings</h1>
+              <p className="text-gray-600 dark:text-gray-400">
+                Manage your preferences and application settings
+              </p>
             </div>
 
-            {/* Main Content Area */}
-            <div className="lg:col-span-3">
-              <Card>
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeSection}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {ActiveComponent && (
-                      <ActiveComponent
-                        hasChanges={hasUnsavedChanges}
-                        onChangesMade={handleChangesMade}
-                        onSave={handleSave}
-                        onCancel={handleCancel}
-                      />
-                    )}
-                  </motion.div>
-                </AnimatePresence>
+            {/* Settings Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              {/* Sidebar Navigation */}
+              <div className="lg:col-span-1">
+                <Card className="sticky top-24">
+                  <nav className="space-y-1">
+                    {sections.map(section => {
+                      const IconComponent = section.icon;
+                      return (
+                        <button
+                          key={section.id}
+                          onClick={() => handleSectionChange(section.id)}
+                          className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all ${
+                            activeSection === section.id
+                              ? 'bg-black dark:bg-white text-white dark:text-black font-semibold shadow-md'
+                              : 'text-black dark:text-white hover:bg-black/5 dark:hover:bg-white/5'
+                          }`}
+                        >
+                          <IconComponent className="text-xl" />
+                          <span>{section.label}</span>
+                        </button>
+                      );
+                    })}
+                  </nav>
+                </Card>
+              </div>
 
-                {/* Global Save/Cancel Buttons */}
-                <AnimatePresence>
-                  {hasUnsavedChanges && (
+              {/* Main Content Area */}
+              <div className="lg:col-span-3">
+                <Card>
+                  <AnimatePresence mode="wait">
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="mt-6 pt-6 border-t border-black/10 dark:border-white/10 flex justify-end gap-3"
+                      key={activeSection}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.2 }}
                     >
-                      <Button variant="outline" onClick={handleCancel} disabled={isSaving}>
-                        Cancel
-                      </Button>
-                      <Button variant="primary" onClick={handleSave} isLoading={isSaving}>
-                        Save Changes
-                      </Button>
+                      {ActiveComponent && (
+                        <ActiveComponent
+                          hasChanges={hasUnsavedChanges}
+                          onChangesMade={handleChangesMade}
+                          onSave={handleSave}
+                          onCancel={handleCancel}
+                        />
+                      )}
                     </motion.div>
-                  )}
-                </AnimatePresence>
-              </Card>
+                  </AnimatePresence>
+
+                  {/* Global Save/Cancel Buttons */}
+                  <AnimatePresence>
+                    {hasUnsavedChanges && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="mt-6 pt-6 border-t border-black/10 dark:border-white/10 flex justify-end gap-3"
+                      >
+                        <Button variant="outline" onClick={handleCancel} disabled={isSaving}>
+                          Cancel
+                        </Button>
+                        <Button variant="primary" onClick={handleSave} isLoading={isSaving}>
+                          Save Changes
+                        </Button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </Card>
+              </div>
             </div>
-          </div>
-        </motion.div>
-      </main>
-      <Footer />
-    </div>
+          </motion.div>
+        </main>
+        <Footer />
+      </div>
+    </ToastProvider>
   );
 }

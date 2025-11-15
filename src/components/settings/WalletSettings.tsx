@@ -1,23 +1,31 @@
-import { useState } from 'react';
 import { useWalletConnection } from '@/hooks/useWalletConnection';
+import { useWalletSettings } from '@/hooks/useWalletSettings';
 import { Switch } from '@/components/ui/switch';
 import { FaWallet } from 'react-icons/fa';
+import { SUPPORTED_WALLETS } from '@/constants/wallets';
 import type { SettingsSectionProps } from '@/pages/Settings';
 
 interface WalletCardProps {
   name: string;
-  color: string;
-  bgColor: string;
+  lightColor: string;
+  darkColor: string;
+  lightBg: string;
+  darkBg: string;
 }
 
-function WalletCard({ name, color, bgColor }: WalletCardProps) {
+function WalletCard({ name, lightColor, darkColor, lightBg, darkBg }: WalletCardProps) {
+  const isDark =
+    typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const bgColor = isDark ? darkBg : lightBg;
+  const textColor = isDark ? darkColor : lightColor;
+
   return (
     <div
-      className={`flex items-center justify-center gap-2 p-3 rounded-lg border border-black/10 dark:border-white/10`}
+      className="flex items-center justify-center gap-2 p-3 rounded-lg border border-black/10 dark:border-white/10 transition-all"
       style={{ backgroundColor: bgColor }}
     >
-      <FaWallet className="text-lg" style={{ color }} />
-      <span className="text-sm font-medium" style={{ color }}>
+      <FaWallet className="text-lg" style={{ color: textColor }} />
+      <span className="text-sm font-medium" style={{ color: textColor }}>
         {name}
       </span>
     </div>
@@ -26,14 +34,19 @@ function WalletCard({ name, color, bgColor }: WalletCardProps) {
 
 export function WalletSettings({ onChangesMade }: SettingsSectionProps) {
   const { connected, name: walletName, address, disconnect } = useWalletConnection();
-  const [autoConnect, setAutoConnect] = useState(true);
+  const { settings, setAutoConnect } = useWalletSettings();
 
   const handleDisconnect = () => {
     disconnect();
     onChangesMade();
   };
 
-  const formatAddress = (addr: string) => {
+  const handleAutoConnectChange = (checked: boolean) => {
+    setAutoConnect(checked);
+    onChangesMade();
+  };
+
+  const formatAddress = (addr: string): string => {
     if (!addr) return '';
     return `${addr.slice(0, 8)}...${addr.slice(-8)}`;
   };
@@ -100,12 +113,10 @@ export function WalletSettings({ onChangesMade }: SettingsSectionProps) {
             </p>
           </div>
           <Switch
-            checked={autoConnect}
-            onCheckedChange={checked => {
-              setAutoConnect(checked);
-              onChangesMade();
-            }}
+            checked={settings.autoConnect}
+            onCheckedChange={handleAutoConnectChange}
             className="ml-4"
+            aria-label="Toggle auto-connect on launch"
           />
         </div>
 
@@ -113,9 +124,9 @@ export function WalletSettings({ onChangesMade }: SettingsSectionProps) {
         <div className="p-4 rounded-lg border border-black/20 dark:border-white/20">
           <h3 className="font-semibold text-black dark:text-white mb-3">Supported Wallets</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <WalletCard name="Nami" color="#1E40AF" bgColor="#DBEAFE" />
-            <WalletCard name="Eternl" color="#059669" bgColor="#D1FAE5" />
-            <WalletCard name="Flint" color="#7C3AED" bgColor="#EDE9FE" />
+            {SUPPORTED_WALLETS.map(wallet => (
+              <WalletCard key={wallet.name} {...wallet} />
+            ))}
           </div>
         </div>
 

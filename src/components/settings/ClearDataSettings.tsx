@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { FiTrash2, FiRefreshCw, FiDatabase, FiAlertTriangle } from 'react-icons/fi';
 import type { SettingsSectionProps } from '@/pages/Settings';
 import { useDataManagement } from '@/hooks/useDataManagement';
+import { useToast } from '@/contexts/ToastContext';
+import { useConfirmation } from '@/hooks/useConfirmation';
+import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 
 interface ClearDataCardProps {
   icon: React.ReactNode;
@@ -61,56 +64,69 @@ export function ClearDataSettings({ onChangesMade }: SettingsSectionProps) {
   const [confirmText, setConfirmText] = useState('');
   const [isClearing, setIsClearing] = useState(false);
   const { clearVerifications, clearSettings, clearCache, clearAllData } = useDataManagement();
+  const toast = useToast();
+  const confirmation = useConfirmation();
 
   const handleClearVerifications = () => {
-    if (!window.confirm('Are you sure you want to delete all verification proofs?')) {
-      return;
-    }
-    clearVerifications();
-    onChangesMade();
-    alert('All verification proofs have been deleted');
+    confirmation.confirm(
+      'Clear Verification Proofs',
+      'Are you sure you want to delete all verification proofs? This action cannot be undone.',
+      () => {
+        clearVerifications();
+        onChangesMade();
+        toast.success('All verification proofs have been deleted');
+      },
+      'warning'
+    );
   };
 
   const handleClearSettings = () => {
-    if (!window.confirm('Are you sure you want to reset all settings to defaults?')) {
-      return;
-    }
-    clearSettings();
-    onChangesMade();
-    alert('Settings have been reset. Please refresh the page.');
+    confirmation.confirm(
+      'Reset Settings',
+      'Are you sure you want to reset all settings to defaults? You will need to refresh the page.',
+      () => {
+        clearSettings();
+        onChangesMade();
+        toast.info('Settings have been reset. Please refresh the page.');
+      },
+      'warning'
+    );
   };
 
   const handleClearCache = () => {
-    if (!window.confirm('Are you sure you want to clear all cached data?')) {
-      return;
-    }
-    clearCache();
-    onChangesMade();
-    alert('Cache has been cleared');
+    confirmation.confirm(
+      'Clear Cache',
+      'Are you sure you want to clear all cached data?',
+      () => {
+        clearCache();
+        onChangesMade();
+        toast.success('Cache has been cleared');
+      },
+      'info'
+    );
   };
 
   const handleClearAllData = async () => {
     if (confirmText !== 'DELETE ALL') {
-      alert('Please type "DELETE ALL" to confirm');
+      toast.warning('Please type "DELETE ALL" to confirm');
       return;
     }
 
-    if (
-      !window.confirm(
-        'This will permanently delete ALL data including verifications, settings, and cache. This action cannot be undone!'
-      )
-    ) {
-      return;
-    }
-
-    setIsClearing(true);
-    try {
-      await clearAllData();
-    } catch (error) {
-      alert(error instanceof Error ? error.message : 'Failed to clear data');
-    } finally {
-      setIsClearing(false);
-    }
+    confirmation.confirm(
+      'Delete All Data',
+      'This will permanently delete ALL data including verifications, settings, and cache. This action cannot be undone!',
+      async () => {
+        setIsClearing(true);
+        try {
+          await clearAllData();
+        } catch (error) {
+          toast.error(error instanceof Error ? error.message : 'Failed to clear data');
+        } finally {
+          setIsClearing(false);
+        }
+      },
+      'danger'
+    );
   };
 
   return (
@@ -195,6 +211,15 @@ export function ClearDataSettings({ onChangesMade }: SettingsSectionProps) {
           </p>
         </div>
       </div>
+
+      <ConfirmationDialog
+        isOpen={confirmation.isOpen}
+        title={confirmation.title}
+        message={confirmation.message}
+        onConfirm={confirmation.handleConfirm}
+        onCancel={confirmation.handleCancel}
+        variant={confirmation.variant}
+      />
     </div>
   );
 }

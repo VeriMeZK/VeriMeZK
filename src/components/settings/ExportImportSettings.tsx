@@ -1,18 +1,21 @@
 import { useState } from 'react';
 import type { SettingsSectionProps } from '@/pages/Settings';
 import { useDataManagement } from '@/hooks/useDataManagement';
+import { useToast } from '@/contexts/ToastContext';
 
 export function ExportImportSettings({ onChangesMade }: SettingsSectionProps) {
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const { exportData, importData } = useDataManagement();
+  const toast = useToast();
 
   const handleExportData = async () => {
     setIsExporting(true);
     try {
       await exportData();
+      toast.success('Data exported successfully');
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Failed to export data');
+      toast.error(error instanceof Error ? error.message : 'Failed to export data');
     } finally {
       setIsExporting(false);
     }
@@ -26,9 +29,9 @@ export function ExportImportSettings({ onChangesMade }: SettingsSectionProps) {
     try {
       await importData(file);
       onChangesMade();
-      alert('Data imported successfully! Please refresh the page.');
+      toast.success('Data imported successfully! Please refresh the page.');
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Failed to import data');
+      toast.error(error instanceof Error ? error.message : 'Failed to import data');
     } finally {
       setIsImporting(false);
       event.target.value = '';
