@@ -1,33 +1,42 @@
 import { useWalletConnection } from '@/hooks/useWalletConnection';
 import { useWalletSettings } from '@/hooks/useWalletSettings';
 import { Switch } from '@/components/ui/switch';
-import { FaWallet } from 'react-icons/fa';
 import { SUPPORTED_WALLETS } from '@/constants/wallets';
 import type { SettingsSectionProps } from '@/pages/Settings';
 
 interface WalletCardProps {
   name: string;
-  lightColor: string;
-  darkColor: string;
-  lightBg: string;
-  darkBg: string;
+  logo: string;
+  available: boolean;
 }
 
-function WalletCard({ name, lightColor, darkColor, lightBg, darkBg }: WalletCardProps) {
-  const isDark =
-    typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const bgColor = isDark ? darkBg : lightBg;
-  const textColor = isDark ? darkColor : lightColor;
-
+function WalletCard({ name, logo, available }: WalletCardProps) {
   return (
     <div
-      className="flex items-center justify-center gap-2 p-3 rounded-lg border border-black/10 dark:border-white/10 transition-all"
-      style={{ backgroundColor: bgColor }}
+      className={`relative flex items-center gap-3 p-4 rounded-lg border transition-all ${
+        available
+          ? 'border-black dark:border-white bg-black/5 dark:bg-white/5'
+          : 'border-black/10 dark:border-white/10 bg-white dark:bg-gray-800 opacity-60'
+      }`}
     >
-      <FaWallet className="text-lg" style={{ color: textColor }} />
-      <span className="text-sm font-medium" style={{ color: textColor }}>
-        {name}
-      </span>
+      <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
+        <img
+          src={logo}
+          alt={`${name} logo`}
+          className="w-6 h-6"
+          onError={e => {
+            e.currentTarget.style.display = 'none';
+            e.currentTarget.nextElementSibling?.classList.remove('hidden');
+          }}
+        />
+        <div className="hidden text-black dark:text-white text-xs font-bold">{name[0]}</div>
+      </div>
+      <span className="text-sm font-medium text-black dark:text-white">{name}</span>
+      {!available && (
+        <span className="ml-auto px-2 py-1 text-xs font-semibold text-black dark:text-white bg-gray-200 dark:bg-gray-600 rounded-full">
+          Soon
+        </span>
+      )}
     </div>
   );
 }
@@ -63,7 +72,7 @@ export function WalletSettings({ onChangesMade }: SettingsSectionProps) {
       <div className="space-y-4">
         {/* Connected Wallet */}
         {connected && address ? (
-          <div className="p-4 rounded-lg border border-black/20 dark:border-white/20 bg-green-50 dark:bg-green-900/20">
+          <div className="p-4 rounded-lg border-2 border-black dark:border-white bg-black/5 dark:bg-white/5">
             <div className="flex items-start justify-between mb-3">
               <div>
                 <h3 className="font-semibold text-black dark:text-white mb-1">Connected Wallet</h3>
@@ -71,7 +80,7 @@ export function WalletSettings({ onChangesMade }: SettingsSectionProps) {
                   {walletName || 'Unknown Wallet'}
                 </p>
               </div>
-              <span className="px-3 py-1 text-xs font-semibold text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-900/40 rounded-full">
+              <span className="px-3 py-1 text-xs font-semibold text-white dark:text-black bg-black dark:bg-white rounded-full">
                 Connected
               </span>
             </div>
@@ -82,7 +91,7 @@ export function WalletSettings({ onChangesMade }: SettingsSectionProps) {
             </div>
             <button
               onClick={handleDisconnect}
-              className="w-full px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 border border-red-300 dark:border-red-700 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
+              className="w-full px-4 py-2 text-sm font-medium text-white dark:text-black bg-black dark:bg-white border-2 border-black dark:border-white rounded-lg hover:opacity-80 transition-all"
             >
               Disconnect Wallet
             </button>
@@ -131,8 +140,8 @@ export function WalletSettings({ onChangesMade }: SettingsSectionProps) {
         </div>
 
         {/* Info */}
-        <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-          <p className="text-sm text-blue-900 dark:text-blue-100">
+        <div className="p-4 rounded-lg bg-black/5 dark:bg-white/5 border border-black/20 dark:border-white/20">
+          <p className="text-sm text-black dark:text-white">
             <strong>ℹ️ Note:</strong> Your wallet is only used to sign transactions. Private keys
             never leave your wallet extension.
           </p>

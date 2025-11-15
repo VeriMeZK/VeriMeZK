@@ -79,7 +79,7 @@ export function PrivacySettings({ onChangesMade }: SettingsSectionProps) {
 
         {/* Privacy Notice */}
         <SettingsCard variant="info" title="Privacy First">
-          <p className="text-sm text-blue-900 dark:text-blue-100">
+          <p className="text-sm text-black dark:text-white">
             All verification processing happens locally on your device. Your biometric data never
             leaves your browser.
           </p>

@@ -15,10 +15,10 @@ export function SettingsCard({
 }: SettingsCardProps) {
   const variants = {
     default: 'border-black/20 dark:border-white/20 bg-transparent',
-    warning: 'border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-900/20',
-    danger: 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20',
-    success: 'border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20',
-    info: 'border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20',
+    warning: 'border-black/30 dark:border-white/30 bg-black/5 dark:bg-white/5',
+    danger: 'border-black/50 dark:border-white/50 bg-black/10 dark:bg-white/10',
+    success: 'border-black/30 dark:border-white/30 bg-black/5 dark:bg-white/5',
+    info: 'border-black/20 dark:border-white/20 bg-black/5 dark:bg-white/5',
   };
 
   return (

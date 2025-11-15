@@ -82,8 +82,8 @@ export function ThemeSettings({ onChangesMade }: SettingsSectionProps) {
         </label>
 
         {theme === 'system' && (
-          <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-            <p className="text-sm text-blue-900 dark:text-blue-100">
+          <div className="p-4 rounded-lg bg-black/5 dark:bg-white/5 border border-black/20 dark:border-white/20">
+            <p className="text-sm text-black dark:text-white">
               <strong>System theme detected:</strong> Currently using{' '}
               <span className="font-semibold">{currentTheme}</span> mode based on your system
               preferences.

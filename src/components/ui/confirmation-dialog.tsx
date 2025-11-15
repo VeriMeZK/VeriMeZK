@@ -24,16 +24,16 @@ export function ConfirmationDialog({
 }: ConfirmationDialogProps) {
   const variants = {
     danger: {
-      icon: 'text-red-600 dark:text-red-400',
+      icon: 'text-black dark:text-white',
       button: 'bg-red-600 dark:bg-red-700 hover:bg-red-700 dark:hover:bg-red-800',
     },
     warning: {
-      icon: 'text-yellow-600 dark:text-yellow-400',
-      button: 'bg-yellow-600 dark:bg-yellow-700 hover:bg-yellow-700 dark:hover:bg-yellow-800',
+      icon: 'text-black dark:text-white',
+      button: 'bg-black dark:bg-white text-white dark:text-black hover:opacity-80',
     },
     info: {
-      icon: 'text-blue-600 dark:text-blue-400',
-      button: 'bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800',
+      icon: 'text-black dark:text-white',
+      button: 'bg-black dark:bg-white text-white dark:text-black hover:opacity-80',
     },
   };
 

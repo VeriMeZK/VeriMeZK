@@ -1,31 +1,28 @@
 export interface SupportedWallet {
   name: string;
-  lightColor: string;
-  darkColor: string;
-  lightBg: string;
-  darkBg: string;
+  logo: string;
+  available: boolean;
 }
 
 export const SUPPORTED_WALLETS: SupportedWallet[] = [
   {
+    name: 'Lace',
+    logo: 'https://www.lace.io/lace-logo.svg',
+    available: true,
+  },
+  {
     name: 'Nami',
-    lightColor: '#1E40AF',
-    darkColor: '#93C5FD',
-    lightBg: '#DBEAFE',
-    darkBg: '#1E3A8A',
+    logo: 'https://namiwallet.io/logo.svg',
+    available: false,
   },
   {
     name: 'Eternl',
-    lightColor: '#059669',
-    darkColor: '#6EE7B7',
-    lightBg: '#D1FAE5',
-    darkBg: '#065F46',
+    logo: 'https://eternl.io/logo.svg',
+    available: false,
   },
   {
     name: 'Flint',
-    lightColor: '#7C3AED',
-    darkColor: '#C4B5FD',
-    lightBg: '#EDE9FE',
-    darkBg: '#5B21B6',
+    logo: 'https://flint-wallet.com/logo.svg',
+    available: false,
   },
 ];

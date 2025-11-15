@@ -25,17 +25,17 @@ function ClearDataCard({
 }: ClearDataCardProps) {
   const colors = {
     warning: {
-      border: 'border-yellow-200 dark:border-yellow-800',
-      bg: 'bg-yellow-50/50 dark:bg-yellow-900/10',
-      text: 'text-yellow-700 dark:text-yellow-300',
+      border: 'border-black/30 dark:border-white/30',
+      bg: 'bg-black/5 dark:bg-white/5',
+      text: 'text-black dark:text-white',
       button:
-        'text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800 hover:bg-yellow-100/50 dark:hover:bg-yellow-900/20',
+        'text-black dark:text-white border-2 border-black/30 dark:border-white/30 hover:bg-black/10 dark:hover:bg-white/10',
     },
     danger: {
-      border: 'border-red-200 dark:border-red-800',
-      bg: 'bg-red-50/50 dark:bg-red-900/10',
-      text: 'text-red-700 dark:text-red-300',
-      button: 'text-white bg-red-600 dark:bg-red-700 hover:bg-red-700 dark:hover:bg-red-800',
+      border: 'border-black/50 dark:border-white/50',
+      bg: 'bg-black/10 dark:bg-white/10',
+      text: 'text-black dark:text-white',
+      button: 'text-white dark:text-black bg-black dark:bg-white hover:opacity-80',
     },
   };
 
@@ -169,12 +169,12 @@ export function ClearDataSettings({ onChangesMade }: SettingsSectionProps) {
         <hr className="border-black/10 dark:border-white/10" />
 
         {/* Clear All Data - Danger Zone */}
-        <div className="p-4 rounded-lg border-2 border-red-200 dark:border-red-800 bg-red-50/50 dark:bg-red-900/10">
+        <div className="p-4 rounded-lg border-2 border-black dark:border-white bg-black/10 dark:bg-white/10">
           <div className="mb-4 flex items-start gap-3">
-            <FiAlertTriangle className="text-xl text-red-700 dark:text-red-300 mt-0.5" />
+            <FiAlertTriangle className="text-xl text-black dark:text-white mt-0.5" />
             <div>
-              <h3 className="font-semibold text-red-700 dark:text-red-300 mb-1">Danger Zone</h3>
-              <p className="text-sm text-red-600 dark:text-red-400">
+              <h3 className="font-semibold text-black dark:text-white mb-1">⚠️ Danger Zone</h3>
+              <p className="text-sm text-black dark:text-white">
                 This will permanently delete ALL data including verifications, settings, and cache.
                 This action cannot be undone!
               </p>
@@ -182,7 +182,7 @@ export function ClearDataSettings({ onChangesMade }: SettingsSectionProps) {
           </div>
 
           <div className="mb-3">
-            <label className="block text-sm font-medium text-red-700 dark:text-red-300 mb-2">
+            <label className="block text-sm font-medium text-black dark:text-white mb-2">
               Type <strong>DELETE ALL</strong> to confirm:
             </label>
             <input
@@ -190,22 +190,22 @@ export function ClearDataSettings({ onChangesMade }: SettingsSectionProps) {
               value={confirmText}
               onChange={e => setConfirmText(e.target.value)}
               placeholder="DELETE ALL"
-              className="w-full px-4 py-2 rounded-lg border-2 border-red-200 dark:border-red-800 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-4 py-2 rounded-lg border-2 border-black/30 dark:border-white/30 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
             />
           </div>
 
           <button
             onClick={handleClearAllData}
             disabled={confirmText !== 'DELETE ALL' || isClearing}
-            className="w-full px-4 py-2 text-sm font-medium text-white bg-red-600 dark:bg-red-700 rounded-lg hover:bg-red-700 dark:hover:bg-red-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-2 text-sm font-medium text-white dark:text-black bg-black dark:bg-white rounded-lg hover:opacity-80 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isClearing ? 'Deleting...' : 'Delete All Data Permanently'}
           </button>
         </div>
 
         {/* Info */}
-        <div className="p-4 rounded-lg bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800">
-          <p className="text-sm text-blue-900 dark:text-blue-100">
+        <div className="p-4 rounded-lg bg-black/5 dark:bg-white/5 border border-black/20 dark:border-white/20">
+          <p className="text-sm text-black dark:text-white">
             <strong>💡 Tip:</strong> Export your data before clearing to create a backup that you
             can restore later.
           </p>

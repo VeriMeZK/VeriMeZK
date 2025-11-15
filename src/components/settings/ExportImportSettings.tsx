@@ -92,8 +92,8 @@ export function ExportImportSettings({ onChangesMade }: SettingsSectionProps) {
         </div>
 
         {/* Warning */}
-        <div className="p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
-          <p className="text-sm text-yellow-900 dark:text-yellow-100">
+        <div className="p-4 rounded-lg bg-black/5 dark:bg-white/5 border-2 border-black/30 dark:border-white/30">
+          <p className="text-sm text-black dark:text-white">
             <strong>⚠️ Important:</strong> Import will merge with existing data. To completely
             replace your data, clear all data first, then import.
           </p>
@@ -106,23 +106,23 @@ export function ExportImportSettings({ onChangesMade }: SettingsSectionProps) {
           </h3>
           <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
             <li className="flex items-center gap-2">
-              <span className="text-green-600 dark:text-green-400">✓</span>
+              <span className="text-black dark:text-white font-bold">✓</span>
               Verification proofs and transaction history
             </li>
             <li className="flex items-center gap-2">
-              <span className="text-green-600 dark:text-green-400">✓</span>
+              <span className="text-black dark:text-white font-bold">✓</span>
               Theme and language preferences
             </li>
             <li className="flex items-center gap-2">
-              <span className="text-green-600 dark:text-green-400">✓</span>
+              <span className="text-black dark:text-white font-bold">✓</span>
               Privacy and notification settings
             </li>
             <li className="flex items-center gap-2">
-              <span className="text-red-600 dark:text-red-400">✗</span>
+              <span className="text-red-500 font-bold">✗</span>
               Wallet private keys (never stored)
             </li>
             <li className="flex items-center gap-2">
-              <span className="text-red-600 dark:text-red-400">✗</span>
+              <span className="text-red-500 font-bold">✗</span>
               Biometric data (never stored)
             </li>
           </ul>
