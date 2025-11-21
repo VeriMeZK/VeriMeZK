@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { matchFaces } from '@/utils/faceMatching';
 
@@ -149,4 +149,3 @@ export function FaceMatchStep({ passportImage, faceImage, onMatched, error }: Fa
     </div>
   );
 }
-

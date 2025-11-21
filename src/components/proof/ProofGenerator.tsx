@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useVerification } from '@/contexts/VerificationContext';
 import { useMidnightClient } from '@/hooks/useMidnight';
 import { Card } from '@/components/shared/Card';
@@ -8,7 +8,7 @@ import type { ProofResult } from '@/types';
 
 export function ProofGenerator() {
   const { state, setProofResult, setStep, setError } = useVerification();
-  const { client, loading: clientLoading } = useMidnightClient();
+  const { loading: clientLoading } = useMidnightClient();
   const [generating, setGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -172,4 +172,3 @@ export function ProofGenerator() {
     </Card>
   );
 }
-

@@ -29,6 +29,7 @@ export interface ProofResult {
   clauses: string[];
   timestamp: Date;
   success: boolean;
+  transactionHash?: string;
 }
 
 export interface MRZData {

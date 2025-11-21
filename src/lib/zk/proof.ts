@@ -1,7 +1,7 @@
 // ZK Proof generation utilities
 // In production, this would use Midnight Dust library for actual ZK proof generation
 
-import type { MRZData, ProofResult, Claims } from '@/types';
+import type { MRZData, ProofResult } from '@/types';
 
 export interface ProofInputs {
   mrzData: MRZData;

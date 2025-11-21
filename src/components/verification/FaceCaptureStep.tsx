@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/shared/Button';
@@ -6,11 +6,11 @@ import { PhonePairing } from '@/components/scan/PhonePairing';
 
 interface FaceCaptureStepProps {
   onCaptured: (imageData: string) => void;
-  onRetry: () => void;
+  onRetry?: () => void;
   error: string | null;
 }
 
-export function FaceCaptureStep({ onCaptured, onRetry, error }: FaceCaptureStepProps) {
+export function FaceCaptureStep({ onCaptured, error }: FaceCaptureStepProps) {
   const webcamRef = useRef<Webcam>(null);
   const [usePhone, setUsePhone] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -154,4 +154,3 @@ export function FaceCaptureStep({ onCaptured, onRetry, error }: FaceCaptureStepP
     </div>
   );
 }
-

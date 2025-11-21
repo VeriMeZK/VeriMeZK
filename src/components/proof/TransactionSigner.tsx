@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useWallet } from '@meshsdk/react';
 import { useVerification } from '@/contexts/VerificationContext';
 import { Card } from '@/components/shared/Card';
@@ -8,7 +8,7 @@ import { getStoredVerifications, saveVerification } from '@/utils/storage';
 import type { StoredVerification } from '@/types';
 
 export function TransactionSigner() {
-  const { wallet, signTx } = useWallet();
+  const { wallet } = useWallet();
   const { state, setStep, setError } = useVerification();
   const [signing, setSigning] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
@@ -25,19 +25,19 @@ export function TransactionSigner() {
     try {
       // Build transaction with proof hash
       // In production, use MeshJS transaction builder
-      const txBuilder = {
-        recipients: [
-          {
-            address: import.meta.env.VITE_CONTRACT_ADDRESS || '',
-            amount: 1n, // 1 lovelace minimum
-          },
-        ],
-        metadata: {
-          proofHash: state.proofResult.hash,
-          clauses: state.proofResult.clauses,
-          timestamp: state.proofResult.timestamp.toISOString(),
-        },
-      };
+      // const txBuilder = {
+      //   recipients: [
+      //     {
+      //       address: import.meta.env.VITE_CONTRACT_ADDRESS || '',
+      //       amount: 1n, // 1 lovelace minimum
+      //     },
+      //   ],
+      //   metadata: {
+      //     proofHash: state.proofResult.hash,
+      //     clauses: state.proofResult.clauses,
+      //     timestamp: state.proofResult.timestamp.toISOString(),
+      //   },
+      // };
 
       // For MVP: Simulate transaction signing
       // In production: const signedTx = await wallet.signTx(txBuilder);

@@ -5,7 +5,7 @@ export interface FaceDescriptor {
   descriptor: Float32Array;
 }
 
-export async function extractFaceDescriptor(image: HTMLImageElement): Promise<FaceDescriptor | null> {
+export async function extractFaceDescriptor(_image: HTMLImageElement): Promise<FaceDescriptor | null> {
   // Placeholder - in production, use face-api.js
   // const detection = await faceapi.detectSingleFace(image).withFaceDescriptor();
   // return detection ? { descriptor: detection.descriptor } : null;
@@ -13,8 +13,8 @@ export async function extractFaceDescriptor(image: HTMLImageElement): Promise<Fa
 }
 
 export function calculateFaceMatch(
-  descriptor1: FaceDescriptor,
-  descriptor2: FaceDescriptor
+  _descriptor1: FaceDescriptor,
+  _descriptor2: FaceDescriptor
 ): number {
   // Placeholder - in production, calculate cosine similarity
   // return faceapi.euclideanDistance(descriptor1.descriptor, descriptor2.descriptor);

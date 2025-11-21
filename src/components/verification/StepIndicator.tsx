@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { motion } from 'framer-motion';
 import type { VerificationStepType } from './VerificationFlow';
 
@@ -22,10 +22,10 @@ export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
         {steps.map((step, index) => {
           const isActive = step.id === currentStep;
           const isCompleted = index < currentIndex;
-          const isUpcoming = index > currentIndex;
+          // const isUpcoming = index > currentIndex; // unused for now
 
           return (
-            <React.Fragment key={step.id}>
+            <div key={step.id} style={{ display: 'contents' }}>
               <div className="flex flex-col items-center flex-1">
                 {/* Step Circle - Smaller */}
                 <motion.div
@@ -112,11 +112,10 @@ export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
                   )}
                 </div>
               )}
-            </React.Fragment>
+            </div>
           );
         })}
       </div>
     </div>
   );
 }
-

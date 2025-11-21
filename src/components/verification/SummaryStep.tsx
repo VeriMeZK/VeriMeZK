@@ -1,5 +1,3 @@
-import React from 'react';
-import { motion } from 'framer-motion';
 import { Button } from '@/components/shared/Button';
 import type { MRZData } from '@/types';
 
@@ -145,4 +143,3 @@ export function SummaryStep({
     </div>
   );
 }
-

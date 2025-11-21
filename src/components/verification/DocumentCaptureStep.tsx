@@ -1,10 +1,9 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PassportWizard } from '@/components/scan/PassportWizard';
 import { PhonePairing } from '@/components/scan/PhonePairing';
 import { useVerification } from '@/contexts/VerificationContext';
 import type { MRZData } from '@/types';
-import { Card } from '@/components/shared/Card';
 
 interface DocumentCaptureStepProps {
   onCaptured: (mrzData: MRZData, imageData: string) => void;

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { motion } from 'framer-motion';
 import config from '@/config';
 import { useAppVersion } from '@/hooks/useAppVersion';
@@ -50,4 +50,3 @@ export function Footer() {
     </footer>
   );
 }
-

@@ -178,7 +178,7 @@ export async function detectDocumentEdges(imageData: ImageData): Promise<{ detec
   
   // Find largest rectangular contour (likely the document)
   let maxArea = 0;
-  let maxContour: cv.Mat | null = null;
+  let maxContour: any = null;
   
   for (let i = 0; i < contours.size(); i++) {
     const contour = contours.get(i);
