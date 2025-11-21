@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { StatusBadge } from './StatusBadge';
 import type { StoredVerification } from '@/types';
@@ -226,4 +226,3 @@ export function VerificationCard({ verification, onViewDetails }: VerificationCa
     </motion.div>
   );
 }
-

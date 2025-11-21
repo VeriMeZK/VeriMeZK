@@ -28,6 +28,7 @@ export default defineConfig({
       '@midnight-ntwrk/midnight-js-indexer-public-data-provider',
       '@midnight-ntwrk/midnight-js-level-private-state-provider',
       '@midnight-ntwrk/midnight-js-network-id',
+      '@midnight-ntwrk/ledger',
     ],
     esbuildOptions: {
       target: 'esnext',
@@ -83,6 +84,16 @@ export default defineConfig({
   build: {
     target: 'esnext',
     rollupOptions: {
+      external: [
+        '@midnight-ntwrk/ledger',
+        '@midnight-ntwrk/dapp-connector-api',
+        '@midnight-ntwrk/compact-runtime',
+        '@midnight-ntwrk/midnight-js-fetch-zk-config-provider',
+        '@midnight-ntwrk/midnight-js-http-client-proof-provider',
+        '@midnight-ntwrk/midnight-js-indexer-public-data-provider',
+        '@midnight-ntwrk/midnight-js-level-private-state-provider',
+        '@midnight-ntwrk/midnight-js-network-id',
+      ],
       output: {
         manualChunks: {
           'mesh-sdk': ['@meshsdk/react', '@meshsdk/core'],

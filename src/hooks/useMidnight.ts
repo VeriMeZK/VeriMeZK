@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getMidnightClient, initializeMidnightAPI, getContractState } from '@/lib/midnight/client';
-import config from '@/config';
+import { getMidnightClient, getContractState } from '@/lib/midnight/client';
 
 export function useMidnightClient() {
     const [client, setClient] = useState<any>(null);

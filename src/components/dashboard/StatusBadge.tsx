@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import type { VerificationStatus } from '@/types';
 
@@ -45,4 +44,3 @@ export function StatusBadge({ status, className = '' }: StatusBadgeProps) {
     </motion.span>
   );
 }
-

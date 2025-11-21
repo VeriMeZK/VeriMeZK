@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import { sendMessageToDesktop, sendDocumentData, sendFaceData, sendValidationUpdate } from '@/utils/phoneConnection';
 import { validatePassport } from '@/utils/passportDetection';
@@ -22,12 +22,12 @@ export function MobileCapture() {
   const [sessionParams] = useState(getSessionParams());
   const [mode, setMode] = useState<'document' | 'face'>('document');
   const webcamRef = useRef<Webcam>(null);
-  const [scanning, setScanning] = useState(false);
+  const [_scanning, setScanning] = useState(false);
   const [validating, setValidating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [connected, setConnected] = useState(false);
   const [isValidSession, setIsValidSession] = useState<boolean | null>(null);
-  const [autoScanning, setAutoScanning] = useState(false);
+  const [_autoScanning, _setAutoScanning] = useState(false);
   const [validation, setValidation] = useState<any>(null);
   const [documentCaptured, setDocumentCaptured] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -549,4 +549,3 @@ export function MobileCapture() {
     </div>
   );
 }
-

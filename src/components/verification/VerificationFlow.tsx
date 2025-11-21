@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVerification } from '@/contexts/VerificationContext';
 import { Card } from '@/components/shared/Card';
@@ -35,7 +35,7 @@ const steps = [
 ] as const;
 
 export function VerificationFlow({ onComplete, onCancel }: VerificationFlowProps) {
-  const { state, setMRZData, setStep } = useVerification();
+  const { setMRZData, setStep } = useVerification();
   const [currentStep, setCurrentStep] = useState<VerificationStepType>('document');
   const [documentData, setDocumentData] = useState<MRZData | null>(null);
   const [documentImage, setDocumentImage] = useState<string | null>(null);
@@ -216,4 +216,3 @@ export function VerificationFlow({ onComplete, onCancel }: VerificationFlowProps
     </div>
   );
 }
-

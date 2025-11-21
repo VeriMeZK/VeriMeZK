@@ -1,7 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { ButtonHTMLAttributes } from 'react';
+import { motion, HTMLMotionProps } from 'framer-motion';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onAnimationStart'> {
   variant?: 'primary' | 'secondary' | 'outline';
   isLoading?: boolean;
 }
@@ -22,13 +22,17 @@ export function Button({
     outline: 'border-2 border-black dark:border-white text-black dark:text-white hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black',
   };
 
+  const motionProps: Omit<HTMLMotionProps<'button'>, 'children' | 'className' | 'disabled'> = {
+    whileHover: { scale: disabled || isLoading ? 1 : 1.02 },
+    whileTap: { scale: disabled || isLoading ? 1 : 0.98 },
+  };
+
   return (
     <motion.button
       className={`${baseClasses} ${variantClasses[variant]} ${className}`}
       disabled={disabled || isLoading}
-      whileHover={{ scale: disabled || isLoading ? 1 : 1.02 }}
-      whileTap={{ scale: disabled || isLoading ? 1 : 0.98 }}
-      {...props}
+      {...motionProps}
+      {...(props as any)}
     >
       {isLoading ? (
         <span className="flex items-center gap-2">

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useWalletConnection } from '@/hooks/useWalletConnection';
@@ -8,11 +8,10 @@ import { VerificationCard } from './VerificationCard';
 import { FiltersSidebar } from './FiltersSidebar';
 import type { StoredVerification, VerificationStatus } from '@/types';
 import { Card } from '@/components/shared/Card';
-import { Button } from '@/components/shared/Button';
 
 export function VerificationDashboard() {
   const { address, connected } = useWalletConnection();
-  const { setStep, state } = useVerification();
+  const { state } = useVerification();
   // Use address from wallet connection or fallback to verification context
   const walletAddress = address || state.walletAddress;
   const [verifications, setVerifications] = useState<StoredVerification[]>([]);
@@ -401,4 +400,3 @@ export function VerificationDashboard() {
     </div>
   );
 }
-

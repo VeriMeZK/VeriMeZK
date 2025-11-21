@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
 import type { VerificationState, VerificationStep, MRZData, ProofResult, StoredVerification } from '@/types';
 import { saveVerification } from '@/utils/storage';
 
@@ -95,4 +95,3 @@ export function useVerification() {
   }
   return context;
 }
-

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import * as faceapi from 'face-api.js';
 import { useVerification } from '@/contexts/VerificationContext';
@@ -12,7 +12,7 @@ export function FaceVerification() {
   const [verifying, setVerifying] = useState(false);
   const [matchScore, setMatchScore] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { state, setFaceMatchScore, setStep } = useVerification();
+  const { setFaceMatchScore, setStep } = useVerification();
 
   useEffect(() => {
     async function loadModels() {
@@ -175,4 +175,3 @@ export function FaceVerification() {
     </Card>
   );
 }
-

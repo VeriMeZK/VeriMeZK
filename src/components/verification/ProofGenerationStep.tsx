@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/shared/Button';
 import { ProofGenerator } from '@/components/proof/ProofGenerator';
@@ -12,11 +12,10 @@ interface ProofGenerationStepProps {
 }
 
 export function ProofGenerationStep({
-  documentData,
   onGenerated,
   onBack,
 }: ProofGenerationStepProps) {
-  const { state, setProofResult } = useVerification();
+  const { state } = useVerification();
   const [proofGenerated, setProofGenerated] = useState(false);
 
   useEffect(() => {
@@ -78,4 +77,3 @@ export function ProofGenerationStep({
     </div>
   );
 }
-

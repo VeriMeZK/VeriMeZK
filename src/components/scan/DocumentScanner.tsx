@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import jsQR from 'jsqr';
 import { useVerification } from '@/contexts/VerificationContext';
@@ -6,7 +6,7 @@ import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import { PhonePairing } from './PhonePairing';
 import type { MRZData } from '@/types';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 function parseMRZ(mrzText: string): MRZData | null {
   // MRZ format: 2 lines for TD1 (ID card) or 3 lines for TD3 (passport)
@@ -114,7 +114,7 @@ export function DocumentScanner() {
 
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     navigator.mediaDevices
       .getUserMedia({ video: true })
       .then(() => setHasPermission(true))
@@ -133,14 +133,14 @@ export function DocumentScanner() {
     );
   }
 
-  const handleDocumentFromPhone = useCallback((mrzData: MRZData, imageData: string) => {
+  const handleDocumentFromPhone = useCallback((mrzData: MRZData, _imageData: string) => {
     setScannedData(mrzData);
     setMRZData(mrzData);
     setStep('verifying');
     setUsePhone(false);
   }, [setMRZData, setStep]);
 
-  const handleFaceFromPhone = useCallback((faceImageData: string) => {
+  const handleFaceFromPhone = useCallback((_faceImageData: string) => {
     // This will be handled by FaceVerification component
     setUsePhone(false);
   }, []);
@@ -246,4 +246,3 @@ export function DocumentScanner() {
     </Card>
   );
 }
-

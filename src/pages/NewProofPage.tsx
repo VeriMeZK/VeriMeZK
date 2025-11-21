@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useVerification } from '@/contexts/VerificationContext';
 import { useWalletConnection } from '@/hooks/useWalletConnection';
 import { VerificationFlow } from '@/components/verification/VerificationFlow';
@@ -55,4 +55,3 @@ function NewProofPage() {
 }
 
 export default NewProofPage;
-
