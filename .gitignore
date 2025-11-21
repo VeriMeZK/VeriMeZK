@@ -1,10 +1,30 @@
 # Dependencies
 node_modules/
 
-# Environment variables
+# Environment variables - NEVER commit these
+# IMPORTANT: Gitignore evaluates patterns in order, last match wins
+# Strategy: List specific patterns, then exceptions, then wildcard
+
+# Ignore base .env file
 .env
+
+# Ignore specific environment variants
 .env.local
-.env.*.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+
+# Allow example files (exceptions - must come BEFORE .env.* wildcard)
+!.env.example
+!.env.example.md
+
+# Catch-all for any other .env.* files (comes AFTER exceptions to allow them to override)
+.env.*
+
+# Note: env.example (without leading dot) doesn't match .env* patterns, so it's automatically allowed
 
 # Certificates
 certs/
