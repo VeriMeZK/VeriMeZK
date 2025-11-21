@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import wasm from 'vite-plugin-wasm';
 import topLevelAwait from 'vite-plugin-top-level-await';
@@ -9,8 +9,21 @@ import { readFileSync, existsSync } from 'fs';
 // Read package.json version at build time
 const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'));
 
+// Load environment variables from .env file
+// Vite's loadEnv needs the mode parameter. For config file, we use 'development' as default
+// Vite will pass the actual mode when running, but for config evaluation we need a default
+const mode = process.env.MODE || process.env.NODE_ENV || 'development';
+const env = loadEnv(mode, process.cwd(), '');
+
 // Get port from environment variable, fallback to default
-const port = process.env.VITE_PORT ? parseInt(process.env.VITE_PORT, 10) : 3356;
+// Priority: CLI override (process.env.VITE_PORT) > .env file (env.VITE_PORT) > default (3356)
+const portEnv = process.env.VITE_PORT || env.VITE_PORT || '3356';
+const port = parseInt(portEnv, 10);
+
+// Log for debugging (only in dev mode to avoid build noise)
+if (mode === 'development') {
+  console.log(`🔧 Vite port: ${port} (from ${process.env.VITE_PORT ? 'CLI' : env.VITE_PORT ? '.env' : 'default'})`);
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
