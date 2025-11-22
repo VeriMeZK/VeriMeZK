@@ -1,26 +1,41 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # Dependencies
 node_modules/
-/.pnp
-.pnp.js
 
-# Testing
-coverage/
-*.lcov
-.nyc_output
+# Environment variables - NEVER commit these
+# IMPORTANT: Gitignore evaluates patterns in order, last match wins
+# Strategy: List specific patterns, then exceptions, then wildcard
 
-# Production
+# Ignore base .env file
+.env
+
+# Ignore specific environment variants
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+
+# Allow example files (exceptions - must come BEFORE .env.* wildcard)
+!.env.example
+!.env.example.md
+
+# Catch-all for any other .env.* files (comes AFTER exceptions to allow them to override)
+.env.*
+
+# Note: env.example (without leading dot) doesn't match .env* patterns, so it's automatically allowed
+
+# Certificates
+certs/
+*.pem
+*.key
+*.crt
+
+# Build outputs
 dist/
 build/
-*.log
-
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+*.tsbuildinfo
 
 # IDE
 .vscode/
@@ -28,39 +43,14 @@ build/
 *.swp
 *.swo
 *~
-.DS_Store
+*.bak
 
 # OS
+.DS_Store
 Thumbs.db
 
-# Debug
+# Logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-lerna-debug.log*
-
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# Temporary files
-*.tmp
-*.temp
-
-# WASM files (if generated)
-*.wasm
-
-# Source maps (optional, uncomment if needed)
-# *.map
-

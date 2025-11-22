@@ -112,39 +112,61 @@ If installation fails, see the [Troubleshooting](#troubleshooting) section.
 
 ### npm
 
+- Node.js 18+ 
+- npm, yarn, or pnpm
+
+### Setup
+
+1. Clone the repository:
 ```bash
-npm install verime-zk
+git clone https://github.com/your-org/verime-zk.git
+cd verime-zk
 ```
 
-### yarn
-
+2. Install dependencies:
 ```bash
-yarn add verime-zk
+npm install
+# or
+yarn install
+# or
+pnpm install
 ```
 
-### pnpm
-
+3. Configure environment variables:
 ```bash
-pnpm add verime-zk
+cp .env.example .env.local
 ```
 
-### Bundle Configuration
+Edit `.env.local` with your configuration:
+```env
+VITE_MIDNIGHT_NETWORK_ID=1
+VITE_MIDNIGHT_RPC_URL=https://your-midnight-rpc-url
+VITE_MIDNIGHT_INDEXER_URL=https://your-midnight-indexer-url
+VITE_CARDANO_NETWORK=testnet
+VITE_CONTRACT_ADDRESS=your-contract-address
+VITE_APP_NAME=VeriMeZK
+```
 
-**Important**: VeriMe ZK includes WebAssembly dependencies. Configure your bundler accordingly:
+4. Start the development server:
+```bash
+npm run dev
+```
 
-#### Webpack
+The app will be available at `http://localhost:3356`
 
-Configure Webpack with `asyncWebAssembly: true` in experiments.
+### Build for Production
 
-#### Rollup
+```bash
+npm run build
+```
 
-Use `@rollup/plugin-wasm` plugin for WASM support.
+The production build will be in the `dist` directory.
 
-#### Vite
+### Preview Production Build
 
-Vite handles WASM automatically—no configuration needed.
-
-**Bundle Size**: ~500KB minified (gzipped: ~180KB)
+```bash
+npm run preview
+```
 
 ---
 
