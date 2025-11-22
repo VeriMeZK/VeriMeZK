@@ -2,6 +2,8 @@
 
 <div align="center">
 
+---
+
 **Zero-Knowledge Identity Proof Toolkit for Browser Environments**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -13,23 +15,100 @@
 
 ---
 
+## Table of Contents
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Usage Examples](#usage-examples)
+- [API Reference](#api-reference)
+- [TypeScript Types](#typescript-types)
+- [UI Integration](#ui-integration)
+- [Error Handling](#error-handling)
+- [Advanced Usage](#advanced-usage)
+- [Testing](#testing)
+- [Limitations](#limitations)
+- [Use Cases](#use-cases)
+- [Troubleshooting](#troubleshooting)
+- [FAQ](#faq)
+- [Contributing](#contributing)
+- [License](#license)
+- [Support](#support)
+- [Acknowledgments](#acknowledgments)
+
+---
+
 ## Overview
 
-**VeriMe ZK** is a client-side JavaScript library that enables zero-knowledge identity verification directly in the browser. Users can prove identity attributes (age, nationality, document validity) without revealing sensitive personal information. All processing happens locally—no data leaves the user's device.
+**VeriMe ZK** is a client-side JavaScript library that enables zero-knowledge identity verification directly in the browser.  
+Users can prove identity attributes (age, nationality, document validity) without revealing sensitive personal information.  
+All processing happens locally — no data leaves the user's device.
 
 ### Key Features
 
-- **Zero-Knowledge Proofs**: Verify identity claims without exposing raw data
-- **Browser-Native**: Works entirely client-side—no backend required
-- **Document Scanning**: Automatic MRZ extraction from passport/ID cards
-- **Face Verification**: Liveness detection and biometric matching
-- **Midnight Compatible**: Proofs verifiable on Midnight blockchain
-- **Multi-Language**: English and French UI support
-- **Flexible Checks**: Customizable proof clauses for your use case
+- **Zero-Knowledge Proofs** — verify identity claims without exposing raw data  
+- **Browser-Native** — works entirely client-side, no backend required  
+- **Document Scanning** — automatic MRZ extraction from passports and ID cards  
+- **Face Verification** — liveness detection and biometric matching  
+- **Midnight Compatible** — proofs are verifiable on the Midnight blockchain  
+- **Multi-Language** — English and French UI support  
+- **Flexible Checks** — customizable proof clauses for various use cases
+
+---
+
+## Architecture
+
+The VeriMe ZK system is composed of several coordinated components that work together in the browser to produce secure zero-knowledge proofs.
+
+### Browser SDK
+A lightweight TypeScript/JavaScript library that exposes the main API surface:  
+`generateProof`, `verifyProof`, and related types.  
+This is what developers import into their applications.
+
+### Capture & Extraction Pipeline
+Handles:
+- camera access  
+- document capture  
+- MRZ extraction (for passports / ID cards)  
+- validation of document fields  
+
+This pipeline ensures high-quality input before proof generation.
+
+### Face Verification & Liveness
+Computes the `faceMatchScore` and detects common spoofing attempts  
+(e.g., photos displayed on screens).  
+This ensures the user is a real, live person.
+
+### Zero-Knowledge Proof Engine
+Transforms validated claims (age, country, expiry, etc.) into a compact zk-proof hash.  
+Proofs are verifiable independently and are compatible with the Midnight blockchain.
+
+### Integration Layer & UI Events
+Provides DOM events (`verimezk:progress`, `verimezk:result`) and configuration hooks,  
+making it easy to integrate the SDK into custom UIs and app workflows.
+
+---
+
+This architecture ensures sensitive data **never leaves the user’s device**  
+while still enabling verifiable identity proofs.
 
 ---
 
 ## Installation
+
+### Prerequisites
+
+- Node.js 18+  
+- npm, yarn, or pnpm  
+- A modern browser (Chrome, Firefox, Safari, Edge)
+
+Verify your tools:
+```bash
+node -v
+npm -v
+```
+
+If installation fails, see the [Troubleshooting](#troubleshooting) section.
 
 ### npm
 
@@ -71,7 +150,65 @@ Vite handles WASM automatically—no configuration needed.
 
 ## Quick Start
 
-Import `generateProof` and `verifyProof` from `verime-zk`. Call `generateProof` with your checks array to create a proof, then use `verifyProof` to validate the proof hash.
+Import `generateProof` and `verifyProof` from `verime-zk`.  
+Call `generateProof` with your checks array to create a proof, then use `verifyProof` to validate the proof hash.
+
+---
+
+## Usage Examples
+
+### Generate and verify a simple proof
+
+```typescript
+import { generateProof, verifyProof } from "verime-zk";
+
+async function demo() {
+  const proof = await generateProof({
+    checks: ['adult'],
+    language: 'en'
+  });
+
+  const isValid = await verifyProof(proof.hash, ['adult']);
+  console.log("Proof valid:", isValid);
+}
+```
+
+### Country-based proof
+
+```typescript
+const proof = await generateProof({
+  checks: [{ country: 'CD' }]
+});
+```
+
+### Document validity example
+
+```typescript
+const proof = await generateProof({
+  checks: [{ validity: '365d' }]
+});
+```
+
+### Custom logic example
+
+```typescript
+const proof = await generateProof({
+  checks: [
+    { custom: (claims) => claims.faceMatchScore > 0.90 }
+  ]
+});
+```
+
+### Adding progress UI feedback
+
+```typescript
+const proof = await generateProof({
+  checks: ['adult'],
+  onProgress: (step, status) => {
+    console.log("Step:", step, "Status:", status);
+  }
+});
+```
 
 ---
 
@@ -278,6 +415,81 @@ Mock data available in `tests/mocks/` for development and testing without camera
 
 ---
 
+## Troubleshooting
+
+### Installation Errors
+
+If you encounter `npm ERR!` during installation:
+- Make sure Node.js 18+ is installed
+- Remove `node_modules` and reinstall:
+
+```bash
+rm -rf node_modules
+npm install
+```
+
+- Check your internet connection or try using a VPN
+- Avoid using `sudo npm install` inside this project
+
+### WebAssembly (WASM) Loading Issues
+
+If WASM fails to load in the browser:
+- Ensure your bundler supports WASM (see Installation section)
+- Use HTTPS when running locally (camera access requires HTTPS)
+- Check browser console for MIME type or CORS errors
+
+### Camera Not Accessible
+
+If the SDK cannot access the camera:
+- Confirm camera permissions in the browser
+- On iOS Safari, ensure “Camera Access” is enabled in settings
+- Close other apps or tabs using the camera
+
+### Build or Lint Errors
+
+Run the following:
+
+```bash
+npm run lint
+npm run build
+```
+
+Fix any issues reported by ESLint, TypeScript, or the bundler.
+
+---
+
+### Test Failures
+
+If tests fail:
+- Run tests in watch mode:
+
+```bash
+npm test -- --watch
+```
+
+- Check failing test output and update your changes accordingly
+
+---
+
+## FAQ
+
+### Does VeriMe ZK send personal data to a server?
+No. All processing happens locally in the browser. The SDK is designed to avoid transmitting sensitive data to external servers.
+
+### Does the library work on mobile?
+Yes. VeriMe ZK supports modern mobile browsers, but iOS Safari may require specific camera permissions.
+
+### Is local HTTPS required?
+Yes. Browser camera access requires HTTPS in production environments. For development, use a local HTTPS server or a trusted tunnel.
+
+### Is VeriMe ZK production-ready?
+Check the CHANGELOG and release notes to understand current stability and supported features.
+
+### Can I add my own verification logic?
+Yes. You can use the `custom` check type to provide your own validation function. See Usage Examples.
+
+---
+
 ## Contributing
 
 Contributions welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting PRs.
@@ -314,11 +526,15 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ---
 
+
+
+---
+
 <div align="center">
 
 **Made for privacy-first applications**
 
-[Documentation](./docs/) • [Examples](./examples/) • [Changelog](./CHANGELOG.md)
+[Documentation](./docs/) • [Examples](./examples/) • [Changelog](./CHANGELVOG.md)
 
 </div>
 
