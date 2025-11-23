@@ -12,8 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- docs: enhanced README with TOC, architecture, usage examples, and troubleshooting (issue #31)
-
 ### Deprecated
 
 ### Removed
