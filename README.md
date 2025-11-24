@@ -20,7 +20,6 @@
 - [Architecture](#architecture)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
-- [Usage Examples](#usage-examples)
 - [API Reference](#api-reference)
 - [TypeScript Types](#typescript-types)
 - [UI Integration](#ui-integration)
@@ -174,63 +173,6 @@ npm run preview
 
 Import `generateProof` and `verifyProof` from `verime-zk`.  
 Call `generateProof` with your checks array to create a proof, then use `verifyProof` to validate the proof hash.
-
----
-
-## Usage Examples
-
-### Generate and verify a simple proof
-
-```typescript
-import { generateProof, verifyProof } from "verime-zk";
-
-async function demo() {
-  const proof = await generateProof({
-    checks: ['adult'],
-    language: 'en'
-  });
-
-  const isValid = await verifyProof(proof.hash, ['adult']);
-  console.log("Proof valid:", isValid);
-}
-```
-
-### Country-based proof
-
-```typescript
-const proof = await generateProof({
-  checks: [{ country: 'CD' }]
-});
-```
-
-### Document validity example
-
-```typescript
-const proof = await generateProof({
-  checks: [{ validity: '365d' }]
-});
-```
-
-### Custom logic example
-
-```typescript
-const proof = await generateProof({
-  checks: [
-    { custom: (claims) => claims.faceMatchScore > 0.90 }
-  ]
-});
-```
-
-### Adding progress UI feedback
-
-```typescript
-const proof = await generateProof({
-  checks: ['adult'],
-  onProgress: (step, status) => {
-    console.log("Step:", step, "Status:", status);
-  }
-});
-```
 
 ---
 
@@ -508,7 +450,7 @@ Yes. Browser camera access requires HTTPS in production environments. For develo
 Check the CHANGELOG and release notes to understand current stability and supported features.
 
 ### Can I add my own verification logic?
-Yes. You can use the `custom` check type to provide your own validation function. See Usage Examples.
+Yes. You can use the `custom` check type to provide your own validation function.
 
 ---
 
